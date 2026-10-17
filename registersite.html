@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlayTools — Регистрация</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --bg:#080b12;
+    --card:rgba(18,23,36,.78);
+    --accent:#4f8cff;
+    --accent-2:#8b5cf6;
+    --text:#e9eef8;
+    --muted:#8b96ad;
+    --border:rgba(255,255,255,.09);
+    --ok:#22c55e;
+  }
+
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* Световые пятна на фоне */
+  body::before,
+  body::after{
+    content:"";
+    position:fixed;
+    width:520px;height:520px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.35;
+    pointer-events:none;
+    z-index:0;
+  }
+  body::before{background:#2563eb;top:-180px;left:-160px}
+  body::after{background:#7c3aed;bottom:-200px;right:-160px}
+
+  .card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:440px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:34px 28px 26px;
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:0 24px 60px rgba(0,0,0,.55);
+    animation:rise .5s ease both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:22px;
+  }
+  .logo-badge{
+    width:42px;height:42px;
+    border-radius:13px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;
+    font-size:21px;
+    box-shadow:0 8px 22px rgba(79,140,255,.4);
+  }
+  .logo-text{font-size:20px;font-weight:800;letter-spacing:.4px}
+  .logo-text span{color:var(--accent)}
+
+  h1{font-size:22px;font-weight:700;text-align:center;margin-bottom:8px}
+  .subtitle{
+    font-size:14px;
+    color:var(--muted);
+    text-align:center;
+    line-height:1.5;
+    margin-bottom:26px;
+  }
+
+  .field{margin-bottom:16px}
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:#b9c4d8;
+    margin-bottom:7px;
+  }
+  input[type="text"],
+  input[type="email"]{
+    width:100%;
+    padding:13px 15px;
+    font-size:15px;
+    color:var(--text);
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--border);
+    border-radius:12px;
+    outline:none;
+    transition:border-color .2s, background .2s, box-shadow .2s;
+  }
+  input::placeholder{color:#5d6880}
+  input:focus{
+    border-color:var(--accent);
+    background:rgba(79,140,255,.08);
+    box-shadow:0 0 0 3px rgba(79,140,255,.15);
+  }
+  input.invalid{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .error-msg{font-size:12px;color:#ef4444;margin-top:6px;display:none}
+  .error-msg.show{display:block}
+
+  .check{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin:20px 0 22px;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.45;
+    cursor:pointer;
+    user-select:none;
+  }
+  .check input{
+    appearance:none;
+    width:19px;height:19px;
+    min-width:19px;
+    margin-top:1px;
+    border:1.5px solid #3b455c;
+    border-radius:6px;
+    background:rgba(255,255,255,.04);
+    cursor:pointer;
+    position:relative;
+    transition:.2s;
+  }
+  .check input:checked{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    border-color:transparent;
+  }
+  .check input:checked::after{
+    content:"✓";
+    position:absolute;
+    inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;
+    font-weight:800;
+    color:#fff;
+  }
+  .check a{color:var(--accent);text-decoration:none}
+
+  .btn{
+    width:100%;
+    padding:15px;
+    font-size:15px;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    border:none;
+    border-radius:13px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    transition:transform .15s, box-shadow .2s, opacity .2s;
+    box-shadow:0 10px 26px rgba(79,140,255,.32);
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 14px 32px rgba(79,140,255,.42)}
+  .btn:active{transform:translateY(0) scale(.99)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+  .btn-ghost{
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--border);
+    box-shadow:none;
+    color:var(--text);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,.1);box-shadow:none}
+
+  .tg-icon{width:18px;height:18px;fill:#fff}
+
+  /* Шаг 2 */
+  #step2{display:none}
+  .steps{
+    list-style:none;
+    margin:20px 0 24px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .steps li{
+    display:flex;
+    gap:12px;
+    font-size:14px;
+    color:#c3cddf;
+    line-height:1.45;
+  }
+  .num{
+    width:24px;height:24px;
+    min-width:24px;
+    border-radius:50%;
+    background:rgba(79,140,255,.16);
+    border:1px solid rgba(79,140,255,.4);
+    color:var(--accent);
+    font-size:12px;
+    font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .status{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    justify-content:center;
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:18px;
+  }
+  .pulse{
+    width:9px;height:9px;
+    border-radius:50%;
+    background:var(--ok);
+    box-shadow:0 0 0 0 rgba(34,197,94,.6);
+    animation:pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}
+    100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+  }
+
+  .footer{
+    text-align:center;
+    font-size:12px;
+    color:#4e5870;
+    margin-top:20px;
+    line-height:1.5;
+  }
+  .footer a{color:var(--muted);text-decoration:none}
+  .footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="logo">
+    <div class="logo-badge">🎮</div>
+    <div class="logo-text">Play<span>Tools</span></div>
+  </div>
+
+  <!-- ШАГ 1: форма -->
+  <div id="step1">
+    <h1>Регистрация</h1>
+    <p class="subtitle">
+      Создайте аккаунт через Telegram-бота и получите доступ к PlayTools
+    </p>
+
+    <form id="regForm" novalidate>
+      <div class="field">
+        <label for="nickname">Никнейм</label>
+        <input type="text" id="nickname" name="nickname"
+               placeholder="например, pro_player" autocomplete="username" maxlength="20">
+        <div class="error-msg" id="nickError">Только латиница, цифры и «_» (2–20 символов)</div>
+        <div class="hint">Будет использован в вашем профиле</div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span style="color:#5d6880;font-weight:400">(необязательно)</span></label>
+        <input type="email" id="email" name="email"
+               placeholder="you@example.com" autocomplete="email">
+        <div class="error-msg" id="emailError">Введите корректный email</div>
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="agree">
+        <span>Я принимаю <a href="#" target="_blank" rel="noopener">условия использования</a>
+        и согласен на обработку данных</span>
+      </label>
+
+      <button type="submit" class="btn" id="submitBtn">
+        <svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21.94 4.3 18.6 20.1c-.25 1.1-.9 1.38-1.83.86l-5.05-3.73-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.13L17.9 6.4c.4-.36-.09-.56-.62-.2L5.72 13.4l-4.95-1.55c-1.08-.34-1.1-1.08.22-1.6L20.5 2.75c.9-.33 1.68.2 1.44 1.55z"/>
+        </svg>
+        Зарегистрироваться через Telegram
+      </button>
+    </form>
+  </div>
+
+  <!-- ШАГ 2: после открытия бота -->
+  <div id="step2">
+    <h1>Почти готово!</h1>
+    <p class="subtitle">Бот открыт в новой вкладке — завершите регистрацию там</p>
+
+    <ul class="steps">
+      <li><span class="num">1</span><span>Нажмите <b>Start</b> / <b>Запустить</b> в боте <b>@playtools_tg_bot</b></span></li>
+      <li><span class="num">2</span><span>Следуйте инструкциям бота — аккаунт создастся автоматически</span></li>
+      <li><span class="num">3</span><span>Вернитесь сюда и продолжите на сайт</span></li>
+    </ul>
+
+    <div class="status">
+      <span class="pulse"></span>
+      <span id="timerText">Автопереход на сайт через 25 сек…</span>
+    </div>
+
+    <button class="btn" id="goSiteBtn">Я зарегистрировался — перейти на сайт →</button>
+    <div style="height:10px"></div>
+    <button class="btn btn-ghost" id="reopenBtn">Открыть бота ещё раз</button>
+  </div>
+
+  <div class="footer">
+    Уже есть аккаунт? <a href="https://t.me/playtools_tg_bot" target="_blank" rel="noopener">Войти через бота</a>
+  </div>
+</div>
+
+<script>
+  /* ================== НАСТРОЙКИ ================== */
+  const BOT_USERNAME = 'playtools_tg_bot';                              // ник бота (без @)
+  const SITE_URL     = 'https://playtoolss.github.io/PlayTools/';       // куда перекидываем
+  const AUTO_REDIRECT_SEC = 25;                                         // автопереход, сек (0 = выкл)
+  /* =============================================== */
+
+  const form      = document.getElementById('regForm');
+  const nickname  = document.getElementById('nickname');
+  const email     = document.getElementById('email');
+  const agree     = document.getElementById('agree');
+  const nickError = document.getElementById('nickError');
+  const emailErr  = document.getElementById('emailError');
+  const submitBtn = document.getElementById('submitBtn');
+
+  const step1     = document.getElementById('step1');
+  const step2     = document.getElementById('step2');
+  const timerText = document.getElementById('timerText');
+
+  let timerId = null;
+
+  // Собираем deep-link на бота
+  function buildBotLink(payload) {
+    const start = payload ? `?start=${payload}` : '';
+    return `https://t.me/${BOT_USERNAME}${start}`;
+  }
+
+  // Telegram разрешает в start-параметре только A-Z a-z 0-9 _ - (до 64 символов)
+  function sanitizePayload(str) {
+    return ('web_' + str).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
+  }
+
+  function openBot(link) {
+    const w = window.open(link, '_blank', 'noopener');
+    // Если popup заблокирован — открываем в текущей вкладке
+    if (!w) window.location.href = link;
+  }
+
+  function showStep2() {
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    startAutoRedirect();
+  }
+
+  function startAutoRedirect() {
+    if (!AUTO_REDIRECT_SEC) {
+      timerText.textContent = 'Готово? Нажмите кнопку ниже';
+      return;
+    }
+    let left = AUTO_REDIRECT_SEC;
+    const render = () => timerText.textContent = `Автопереход на сайт через ${left} сек…`;
+    render();
+
+    timerId = setInterval(() => {
+      left--;
+      if (left <= 0) {
+        clearInterval(timerId);
+        goToSite();
+      } else {
+        render();
+      }
+    }, 1000);
+  }
+
+  function goToSite() {
+    if (timerId) clearInterval(timerId);
+    window.location.href = SITE_URL;
+  }
+
+  // ---- Валидация ----
+  function validNick(v) { return /^[A-Za-z0-9_]{2,20}$/.test(v); }
+  function validEmail(v) { return v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+
+  nickname.addEventListener('input', () => {
+    nickname.classList.remove('invalid');
+    nickError.classList.remove('show');
+  });
+  email.addEventListener('input', () => {
+    email.classList.remove('invalid');
+    emailErr.classList.remove('show');
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const nick = nickname.value.trim();
+    const mail = email.value.trim();
+    let ok = true;
+
+    if (!validNick(nick)) {
+      nickname.classList.add('invalid');
+      nickError.classList.add('show');
+      ok = false;
+    }
+    if (!validEmail(mail)) {
+      email.classList.add('invalid');
+      emailErr.classList.add('show');
+      ok = false;
+    }
+    if (!agree.checked) {
+      ok = false;
+      agree.parentElement.style.color = '#ef4444';
+      setTimeout(() => agree.parentElement.style.color = '', 1600);
+    }
+    if (!ok) return;
+
+    // Сохраняем локально (бот получит данные через start-параметр)
+    try {
+      localStorage.setItem('playtools_pending', JSON.stringify({
+        nickname: nick,
+        email: mail,
+        ts: Date.now()
+      }));
+    } catch (_) {}
+
+    submitBtn.disabled = true;
+    openBot(buildBotLink(sanitizePayload(nick)));
+    showStep2();
+  });
+
+  document.getElementById('goSiteBtn').addEventListener('click', goToSite);
+
+  document.getElementById('reopenBtn').addEventListener('click', () => {
+    const nick = (nickname.value || '').trim();
+    openBot(buildBotLink(sanitizePayload(nick || 'user')));
+  });
+
+  // Если пользователь вернулся на вкладку из бота — не мешаем, таймер продолжает идти
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && step2.style.display === 'block') {
+      // Небольшая подсказка, что можно уже переходить
+      timerText.textContent = timerText.textContent.replace('Автопереход', 'Можно переходить');
+    }
+  });
+</script>
+
+</body>
+</html>
